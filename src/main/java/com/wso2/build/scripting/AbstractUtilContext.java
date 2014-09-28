@@ -9,9 +9,6 @@ import org.apache.maven.project.MavenProject;
 import javax.script.*;
 
 
-/**
- * Created by uvindra on 3/31/14.
- */
 public class AbstractUtilContext {
     private static final String scriptObjectVar = "_scriptObj";
     private static final String scriptFunctionVar = "_scriptFunction";
@@ -29,9 +26,8 @@ public class AbstractUtilContext {
     private ScriptContext newContext = null;
     private String logString = "N/A";
 
-    public AbstractUtilContext(MavenProject mavenProject, Parameters parameters, Log log) {
+    public AbstractUtilContext(MavenProject mavenProject, Log log) {
         this.mavenProject = mavenProject;
-        this.parameters = parameters;
         this.log = log;
         parentProject = this.mavenProject.getParent();
 

@@ -1,7 +1,7 @@
 package com.wso2.build.interfaces;
 
-import org.xml.sax.InputSource;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.xml.sax.InputSource;
 
 /**
  * Created by uvindra on 2/8/14.

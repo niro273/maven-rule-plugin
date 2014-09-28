@@ -1,12 +1,9 @@
 package com.wso2.build.interfaces;
 
-import com.wso2.build.beans.Parameters;
+import java.io.Serializable;
 
 
-/**
- * Created by uvindra on 2/9/14.
- */
-public interface Factory {
+
+public interface Factory extends Serializable{
     PluginConfigParser getParser();
-    RuleRegistry getRegistry(Parameters parameters);
 }

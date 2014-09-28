@@ -1,9 +1,5 @@
 package com.wso2.build.scripting;
 
-import com.wso2.build.beans.Artifact;
-import com.wso2.build.beans.Parameters;
-import com.wso2.build.registry.BuildDependencyClient;
-import com.wso2.build.registry.PackageBundleClient;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.logging.Log;
@@ -19,11 +15,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
-/**
- * Created by uvindra on 4/1/14.
- */
+
 final public class ScriptUtilContext extends AbstractUtilContext {
 
     private static final String ruleStateFolder = "rulestate";
@@ -32,8 +27,8 @@ final public class ScriptUtilContext extends AbstractUtilContext {
     private static final String approvedState = "Approved";
     private static final String dependencyApprovalRule = "_dependencyApprovalRule_";
 
-    public ScriptUtilContext(MavenProject mavenProject, Parameters parameters, Log log) {
-        super(mavenProject, parameters, log);
+    public ScriptUtilContext(MavenProject mavenProject, Log log) {
+        super(mavenProject, log);
     }
 
     public List<String> getBundlePluginInstructionValues(String searchInstruction) {
@@ -291,73 +286,4 @@ final public class ScriptUtilContext extends AbstractUtilContext {
         }
     }
 
-
-    public void logDependencyApprovalState() {
-        if (isRuleExecuted(dependencyApprovalRule)) {
-            return;
-        }
-
-        BuildDependencyClient client = new BuildDependencyClient();
-
-        client.loadDependecies(parameters);
-
-        log.info("No of Artifacts : " + client.getArtifactsSize());
-
-        Iterator it = client.getArtifactIterator();
-
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-
-            Artifact artifact = (Artifact) entry.getValue();
-
-            if (true != approvedState.equalsIgnoreCase(artifact.getState())) {
-                List<String> usedModules = client.getArtifactUsage((String) entry.getKey());
-
-                log.info("");
-                log.info("=========================================");
-                log.info("Unapproved Artifact : " + entry.getKey());
-                log.info("=========================================");
-
-                for (String usedModule : usedModules) {
-                    log.info("Module affected : " + usedModule);
-                }
-            }
-        }
-
-        flagRuleExecution(dependencyApprovalRule);
-    }
-
-    public boolean isPackageVersionExported(String packageName, String version) {
-        PackageBundleClient client = new PackageBundleClient();
-
-        client.loadPackageBundles(parameters);
-
-        return client.isVersionExported(packageName, version);
-    }
-
-    public boolean isLatestExportedPackageVersion(String packageName, String version) {
-        PackageBundleClient client = new PackageBundleClient();
-
-        client.loadPackageBundles(parameters);
-
-        return client.isLatestExportedVersion(packageName, version);
-    }
-
-
-    public String getLatestExportedPackageVersion(String packageName) {
-        PackageBundleClient client = new PackageBundleClient();
-
-        client.loadPackageBundles(parameters);
-
-        return client.getLatestVersion(packageName);
-    }
-
-
-    public List<String> getExportedPackageVersions(String packageName) {
-        PackageBundleClient client = new PackageBundleClient();
-
-        client.loadPackageBundles(parameters);
-
-        return client.getExportedVersions(packageName);
-    }
 }

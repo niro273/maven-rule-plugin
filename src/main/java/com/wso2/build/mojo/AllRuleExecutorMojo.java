@@ -1,10 +1,9 @@
 package com.wso2.build.mojo;
 
-import com.wso2.build.beans.Parameters;
-import com.wso2.build.core.Configs;
 import com.wso2.build.core.RuleExecutor;
 import com.wso2.build.interfaces.Factory;
 import com.wso2.build.interfaces.FactoryContainer;
+import org.apache.http.HttpException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -17,6 +16,8 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -78,10 +79,10 @@ public class AllRuleExecutorMojo  extends AbstractMojo {
     private FactoryContainer factoryContainer = null;
     private RuleExecutor ruleExecutor = new RuleExecutor(getLog());
 
-
     @Override
     public void execute() throws MojoExecutionException {
-        Parameters parameters = Configs.loadParameters(settings);
+
+        String localRepo=settings.getLocalRepository();
 
         try {
             PlexusContainer container = new DefaultPlexusContainer();
@@ -90,7 +91,7 @@ public class AllRuleExecutorMojo  extends AbstractMojo {
 
             Factory factory = factoryContainer.getFactory("default");
 
-            ruleExecutor.executeAllRules(project, session, pluginManager, runtime, factory, parameters, reactorProjects);
+            ruleExecutor.executeAllRules(project, session, pluginManager, runtime, factory, reactorProjects,localRepo);
 
             // stop the components and container
             container.dispose();
@@ -104,6 +105,12 @@ public class AllRuleExecutorMojo  extends AbstractMojo {
             e.printStackTrace();
 
             throw new MojoExecutionException("Factory container could not be instantiated");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (HttpException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
     }
 }

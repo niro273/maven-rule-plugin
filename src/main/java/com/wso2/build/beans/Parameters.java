@@ -2,10 +2,8 @@ package com.wso2.build.beans;
 
 import java.io.Serializable;
 
-/**
- * Created by uvindra on 2/12/14.
- */
 public class Parameters implements Serializable {
+
     private String homePath;
     private String ruleEndpoint;
     private String lifeCycleEndpoint;
@@ -114,4 +112,6 @@ public class Parameters implements Serializable {
     public void setPackageEndpoint(String packageEndpoint) {
         this.packageEndpoint = packageEndpoint;
     }
+
+
 }
